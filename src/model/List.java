@@ -1,5 +1,7 @@
 package model;
 
+import org.w3c.dom.Node;
+
 /**
  * Created by Jean-Pierre on 05.11.2016.
  */
@@ -89,8 +91,7 @@ public class List<ContentType> {
      * @return true, wenn die Liste leer ist, sonst false
      */
     public boolean isEmpty() {
-        //TODO 01a: Die Liste ist leer, wenn es kein erstes Element gibt.
-        return false;
+        return first == null;
     }
 
     /**
@@ -101,7 +102,7 @@ public class List<ContentType> {
      */
     public boolean hasAccess() {
         //TODO 01b: Es gibt keinen Zugriff, wenn current auf kein Element verweist.
-        return false;
+        return current!=null;
     }
 
     /**
@@ -112,15 +113,22 @@ public class List<ContentType> {
      * den Wert false.
      */
     public void next() {
-        //TODO 01c: Wechsel auf die nächste Node
+        if(!isEmpty() && hasAccess() && current != last) {
+            current = current.next;
+        }else{
+            current = null;
+        }
+
     }
 
     /**
      * Falls die Liste nicht leer ist, wird das erste Objekt der Liste aktuelles
      * Objekt. Ist die Liste leer, geschieht nichts.
      */
-    public void toFirst() {
-        //TODO 01d: Sprung zur ersten Node
+    public void toFirst(){
+        if(!isEmpty()){
+            current=first;
+        }
     }
 
     /**
@@ -128,7 +136,9 @@ public class List<ContentType> {
      * aktuelles Objekt. Ist die Liste leer, geschieht nichts.
      */
     public void toLast() {
-        //TODO 01e: Sprung auf die letzte Node
+        if(!isEmpty()){
+            current=last;
+        }
     }
 
     /**
@@ -140,7 +150,9 @@ public class List<ContentType> {
      *         kein aktuelles Objekt gibt
      */
     public ContentType getContent() {
-        //TODO 01f: Element zurückgeben
+        if(hasAccess()){
+            return current.getContentObject();
+        }
         return null;
     }
 
@@ -155,6 +167,9 @@ public class List<ContentType> {
     public void setContent(ContentType pContent) {
         // Nichts tun, wenn es keinen Inhalt oder kein aktuelles Element gibt.
         //TODO 01g: Inhaltsobjekt ersetzen
+        if(hasAccess() && pContent != null){
+            current.contentObject = pContent;
+        }
     }
 
     /**
@@ -227,7 +242,16 @@ public class List<ContentType> {
      *         der Liste ist
      */
     private ListNode getPrevious(ListNode pNode) {
-        //TODO 01l: Vorgänger-Node der aktuellen Node liefern.
+        if(!isEmpty() && pNode != null && pNode != first ){
+            ListNode HELP = first;
+            while(HELP.next != pNode){
+                HELP = HELP.next;
+                if(HELP.next == last){
+                    return null;
+                }
+            }
+            return HELP;
+        }
         return null;
     }
 
