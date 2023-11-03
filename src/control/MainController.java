@@ -3,6 +3,7 @@ package control;
 import model.File;
 import model.List;
 
+
 /**
  * Created by Jean-Pierre on 05.11.2016.
  */
@@ -13,7 +14,7 @@ public class MainController {
     public MainController(){
         allShelves = new List[2];
         allShelves[0] = new List<File>(); //Beachtet die unterschiedliche Instanziierung! Was bedeutet das?
-        allShelves[1] = new List<>();
+        allShelves[1] = new List<File>();
         createFiles();
     }
 
@@ -23,9 +24,13 @@ public class MainController {
      * @return String-Array mit den Familiennamen
      */
     public String[] showShelfContent(int index){
+        String[] help = "";
         List<File> list = allShelves[index];
+        list.toFirst();
         //TODO 03: Ausgabe der Inhalte
-        return new String[]{"Platzhalter00", "Platzhalter01", "Platzhalter02"};
+        while (list.getContent() !=null) {
+            help = help + list.getContent().getName();
+        }
     }
 
     /**
@@ -57,7 +62,12 @@ public class MainController {
      * @return true, falls das Hinzufügen geklappt hat, sonst false.
      */
     public boolean appendANewFile(int index, String name, String phoneNumber){
-        //TODO 02: Hinzufügen einer neuen Akte am Ende der Liste.
+        File file = new File(name,phoneNumber);
+        allShelves[index].append(file);
+        allShelves[index].toLast();
+        if(allShelves[index].getContent() == file){
+            return true;
+        }
         return false;
     }
 

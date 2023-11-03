@@ -49,7 +49,7 @@ public class List<ContentType> {
          * @return das Objekt, auf das der aktuelle Verweis zeigt
          */
         public ListNode getNextNode() {
-            return this.next;
+            return next;
         }
 
         /**
@@ -59,7 +59,7 @@ public class List<ContentType> {
          * @param pNext der Nachfolger des Knotens
          */
         public void setNextNode(ListNode pNext) {
-            this.next = pNext;
+            next = pNext;
         }
 
     }
@@ -114,7 +114,7 @@ public class List<ContentType> {
      */
     public void next() {
         if(!isEmpty() && hasAccess() && current != last) {
-            current = current.next;
+            current = current.getNextNode();
         }else{
             current = null;
         }
@@ -168,7 +168,7 @@ public class List<ContentType> {
         // Nichts tun, wenn es keinen Inhalt oder kein aktuelles Element gibt.
         //TODO 01g: Inhaltsobjekt ersetzen
         if(hasAccess() && pContent != null){
-            current.contentObject = pContent;
+            current.setContentObject(pContent);
         }
     }
 
@@ -186,6 +186,22 @@ public class List<ContentType> {
      */
     public void insert(ContentType pContent) {
         //TODO 01h: Inhaltsobjekt einfügen
+        if(pContent!=null){
+            ListNode newNode = new ListNode(pContent);
+            if(hasAccess()){
+                if (current == first){
+                    newNode.setNextNode(first);
+                    first = newNode;
+                }else{
+                    ListNode HELP = this.getPrevious(current);
+                    newNode.setNextNode(current);
+                    HELP.setNextNode(newNode);
+                }
+            } else if(isEmpty()){
+                append(pContent);
+            }
+        }
+
     }
 
     /**
@@ -200,6 +216,15 @@ public class List<ContentType> {
      */
     public void append(ContentType pContent) {
         //TODO 01i: Inhaltsobjekt anhängen
+        if(pContent != null){
+            ListNode newNode = new ListNode(pContent);
+            if (isEmpty()) {
+                first = newNode;
+            }else{
+                last.setNextNode(newNode);
+            }
+            last = newNode;
+        }
     }
 
     /**
@@ -214,6 +239,18 @@ public class List<ContentType> {
      */
     public void concat(List<ContentType> pList) {
         //TODO 01j: eine Liste an eine andere anhängen
+        if(this != pList && pList !=null && pList.isEmpty()){
+            if(isEmpty()){
+                this.first = pList.first;
+            }else{
+                this.last.setNextNode(pList.first);
+            }
+            this.last = pList.last;
+
+            pList.first = null;
+            pList.current = null;
+            pList.last = null;
+        }
     }
 
     /**
@@ -228,7 +265,23 @@ public class List<ContentType> {
     public void remove() {
         // Nichts tun, wenn es kein aktuelles Element gibt oder die Liste leer ist.
         //TODO 01k: eine Node samt Inhaltsobjekt entfernen
-    }
+        if(hasAccess()){
+            if( current != first) {
+                ListNode previousNode = this.getPrevious(current);
+                if (current == last) {
+                    last = previousNode;
+                }
+                previousNode.next = current.next;
+                current = previousNode.next;
+            }else{
+                if( first.next == null) {
+                    last = null;
+                }
+                    first = first.next;
+                    current = first;
+                }
+            }
+        }
 
     /**
      * Liefert den Vorgaengerknoten des Knotens pNode. Ist die Liste leer, pNode
@@ -242,13 +295,10 @@ public class List<ContentType> {
      *         der Liste ist
      */
     private ListNode getPrevious(ListNode pNode) {
-        if(!isEmpty() && pNode != null && pNode != first ){
+        if(pNode != null && first != pNode){
             ListNode HELP = first;
-            while(HELP.next != pNode){
-                HELP = HELP.next;
-                if(HELP.next == last){
-                    return null;
-                }
+            while(HELP!= null && HELP.getNextNode() != pNode){
+                HELP = HELP.getNextNode();
             }
             return HELP;
         }
