@@ -239,7 +239,7 @@ public class List<ContentType> {
      */
     public void concat(List<ContentType> pList) {
         //TODO 01j: eine Liste an eine andere anhängen
-        if(this != pList && pList !=null && pList.isEmpty()){
+        if(this != pList && pList !=null && !pList.isEmpty()){
             if(isEmpty()){
                 this.first = pList.first;
             }else{
